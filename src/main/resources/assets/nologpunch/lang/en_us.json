@@ -1,1 +1,4 @@
-{ }
+{
+	"item.nologpunch.flint_tool":"Flint Tool",
+	"item.nologpunch.flint_tool.tooltip":"Axe and shovel combined"
+ }
