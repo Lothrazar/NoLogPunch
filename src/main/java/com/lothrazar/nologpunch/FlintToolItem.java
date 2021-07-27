@@ -1,40 +1,40 @@
 package com.lothrazar.nologpunch;
 
-import com.google.common.collect.Sets;
 import java.util.List;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ToolItem;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
-public class FlintToolItem extends ToolItem {
+public class FlintToolItem extends DiggerItem {
 
   public FlintToolItem(Properties builder) {
-    super(4F, -2.8F, ItemTier.WOOD, Sets.newHashSet(),
-        builder.addToolType(ToolType.AXE, 0).addToolType(ToolType.SHOVEL, 0).group(ItemGroup.TOOLS));
+    super(4F, -2.8F, Tiers.WOOD, BlockTags.MINEABLE_WITH_AXE,
+        builder.addToolType(ToolType.AXE, 0).addToolType(ToolType.SHOVEL, 0).tab(CreativeModeTab.TAB_TOOLS));
   }
 
   @Override
   @OnlyIn(Dist.CLIENT)
-  public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-    TranslationTextComponent t = new TranslationTextComponent(getTranslationKey() + ".tooltip");
-    t.mergeStyle(TextFormatting.GRAY);
+  public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+    TranslatableComponent t = new TranslatableComponent(getDescriptionId() + ".tooltip");
+    t.withStyle(ChatFormatting.GRAY);
     tooltip.add(t);
   }
 
@@ -42,55 +42,55 @@ public class FlintToolItem extends ToolItem {
    * Called when this item is used when targetting a Block
    */
   @Override
-  public ActionResultType onItemUse(ItemUseContext context) {
-    World world = context.getWorld();
-    BlockPos blockpos = context.getPos();
+  public InteractionResult useOn(UseOnContext context) {
+    Level world = context.getLevel();
+    BlockPos blockpos = context.getClickedPos();
     BlockState blockstate = world.getBlockState(blockpos);
-    PlayerEntity playerentity = context.getPlayer();
-    BlockState block = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItem(), net.minecraftforge.common.ToolType.AXE);
+    Player playerentity = context.getPlayer();
+    BlockState block = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), net.minecraftforge.common.ToolType.AXE);
     if (block != null) {
       //axe action
-      world.playSound(playerentity, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-      if (!world.isRemote) {
-        world.setBlockState(blockpos, block, 11);
+      world.playSound(playerentity, blockpos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
+      if (!world.isClientSide) {
+        world.setBlock(blockpos, block, 11);
         if (playerentity != null) {
-          context.getItem().damageItem(1, playerentity, (p) -> {
-            p.sendBreakAnimation(context.getHand());
+          context.getItemInHand().hurtAndBreak(1, playerentity, (p) -> {
+            p.broadcastBreakEvent(context.getHand());
           });
         }
         //chance to drop stick?
       }
-      return ActionResultType.func_233537_a_(world.isRemote);
+      return InteractionResult.sidedSuccess(world.isClientSide);
     }
     else {
       //try shovel action
-      BlockState blockstate1 = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItem(), net.minecraftforge.common.ToolType.SHOVEL);
+      BlockState blockstate1 = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), net.minecraftforge.common.ToolType.SHOVEL);
       BlockState blockstate2 = null;
-      if (blockstate1 != null && world.isAirBlock(blockpos.up())) {
-        world.playSound(context.getPlayer(), blockpos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+      if (blockstate1 != null && world.isEmptyBlock(blockpos.above())) {
+        world.playSound(context.getPlayer(), blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
         blockstate2 = blockstate1;
       }
-      else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.get(CampfireBlock.LIT)) {
-        if (!world.isRemote()) {
-          world.playEvent((PlayerEntity) null, 1009, blockpos, 0);
+      else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+        if (!world.isClientSide()) {
+          world.levelEvent(playerentity, 1009, blockpos, 0);
         }
-        CampfireBlock.extinguish(world, blockpos, blockstate);
-        blockstate2 = blockstate.with(CampfireBlock.LIT, Boolean.valueOf(false));
+        CampfireBlock.dowse(playerentity, world, blockpos, blockstate);
+        blockstate2 = blockstate.setValue(CampfireBlock.LIT, Boolean.valueOf(false));
       }
       if (blockstate2 != null) {
-        if (!world.isRemote) {
-          world.setBlockState(blockpos, blockstate2, 11);
+        if (!world.isClientSide) {
+          world.setBlock(blockpos, blockstate2, 11);
           if (playerentity != null) {
-            context.getItem().damageItem(1, playerentity, (player) -> {
-              player.sendBreakAnimation(context.getHand());
+            context.getItemInHand().hurtAndBreak(1, playerentity, (player) -> {
+              player.broadcastBreakEvent(context.getHand());
             });
           }
         }
-        return ActionResultType.func_233537_a_(world.isRemote);
+        return InteractionResult.sidedSuccess(world.isClientSide);
       }
       else {
         //neither
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
       }
     }
   }

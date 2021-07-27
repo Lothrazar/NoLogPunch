@@ -1,6 +1,6 @@
 package com.lothrazar.nologpunch;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -12,9 +12,8 @@ public class ModRegistry {
   @SubscribeEvent
   public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
     IForgeRegistry<Item> r = event.getRegistry();
-    //.group(MaterialRegistry.ITEM_GROUP)
     //flint_knife ?
-    r.register(new FlintToolItem(new Item.Properties().maxDamage(64)).setRegistryName("flint_tool"));
+    r.register(new FlintToolItem(new Item.Properties().durability(64)).setRegistryName("flint_tool"));
     //only item: 1 flint tool make tool from either
     //stick flint
     //bamboo flint
