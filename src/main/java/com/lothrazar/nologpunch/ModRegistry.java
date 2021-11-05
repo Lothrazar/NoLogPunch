@@ -11,14 +11,8 @@ public class ModRegistry {
 
   @SubscribeEvent
   public static void onItemsRegistry(final RegistryEvent.Register<Item> event) {
-    IForgeRegistry<Item> r = event.getRegistry();
-    //flint_knife ?
+    IForgeRegistry<Item> r = event.getRegistry(); 
     r.register(new FlintToolItem(new Item.Properties().durability(64)).setRegistryName("flint_tool"));
-    //only item: 1 flint tool make tool from either
-    //stick flint
-    //bamboo flint
-    //sugar reeds flint
-    //tool gives bark ? and maybe makes paths . dual shovel/axe !
-    //bark gives bark axe and shovel -? damaged if possible
+ 
   }
 }

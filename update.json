@@ -5,6 +5,6 @@
     "1.17.1-recommended": "1.0.0"
   },
   "1.17.1": {
-    "1.0.0": "Ported "
+    "1.0.0": "Fixed to be compatible with latest forge toolActions update, Flint tool still acts as an Axe harvesting tool on wood/logs/etc "
   }
 }

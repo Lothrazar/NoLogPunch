@@ -10,16 +10,14 @@ public class ConfigManager {
 
   private static final ForgeConfigSpec.Builder CFG = new ForgeConfigSpec.Builder();
   private static ForgeConfigSpec COMMON_CONFIG;
-  public static BooleanValue LOGS;
-  public static BooleanValue DIRT;
+  public static BooleanValue LOGS; 
   static {
     initConfig();
   }
 
   private static void initConfig() {
     CFG.comment("If whatever you are holding is not a tool or has no tool types, it will not be able to break these block tags").push(ModMain.MODID);
-    LOGS = CFG.comment("Apply restrictions to minecaft:logs").define("logs", true);
-    DIRT = CFG.comment("Apply restrictions to forge:dirt").define("dirt", false);
+    LOGS = CFG.comment("Apply restrictions to minecaft:logs").define("logs", true); 
     CFG.pop(); // one pop for every push
     COMMON_CONFIG = CFG.build();
   }

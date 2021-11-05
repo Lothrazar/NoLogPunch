@@ -21,13 +21,12 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.ToolActions;
 
 public class FlintToolItem extends DiggerItem {
 
   public FlintToolItem(Properties builder) {
-    super(4F, -2.8F, Tiers.WOOD, BlockTags.MINEABLE_WITH_AXE,
-        builder.addToolType(ToolType.AXE, 0).addToolType(ToolType.SHOVEL, 0).tab(CreativeModeTab.TAB_TOOLS));
+    super(4F, -2.8F, Tiers.WOOD, BlockTags.MINEABLE_WITH_AXE, builder.tab(CreativeModeTab.TAB_TOOLS));
   }
 
   @Override
@@ -47,7 +46,7 @@ public class FlintToolItem extends DiggerItem {
     BlockPos blockpos = context.getClickedPos();
     BlockState blockstate = world.getBlockState(blockpos);
     Player playerentity = context.getPlayer();
-    BlockState block = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), net.minecraftforge.common.ToolType.AXE);
+    BlockState block = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), ToolActions.AXE_DIG);
     if (block != null) {
       //axe action
       world.playSound(playerentity, blockpos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -64,7 +63,7 @@ public class FlintToolItem extends DiggerItem {
     }
     else {
       //try shovel action
-      BlockState blockstate1 = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), net.minecraftforge.common.ToolType.SHOVEL);
+      BlockState blockstate1 = blockstate.getToolModifiedState(world, blockpos, playerentity, context.getItemInHand(), ToolActions.SHOVEL_DIG);
       BlockState blockstate2 = null;
       if (blockstate1 != null && world.isEmptyBlock(blockpos.above())) {
         world.playSound(context.getPlayer(), blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
