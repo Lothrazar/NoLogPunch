@@ -1,13 +1,12 @@
 buildscript {
     repositories {
+        maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://files.minecraftforge.net/maven' }
-    //    maven { url = 'https://dist.creeper.host/Sponge/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-    //    classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -17,7 +16,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'checkstyle'
 // apply plugin: 'org.spongepowered.mixin'
 
-import net.minecraftforge.gradle.common.task.SignJar
+import net.minecraftforge.gradle.common.tasks.SignJar
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
@@ -44,17 +43,11 @@ minecraft {
     
     mappings channel: 'snapshot', version: mappings_version
  
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')
-            
-// some IDE's can get the Program arguments here  --mixin mixins.myplugin.json
-            //args "--mixin mixins.myplugin.json"
-		        //property 'mixin', 'mixins.myplugin.json'
 			
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -85,31 +78,8 @@ minecraft {
             }
         }
 
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'nologpunch', '--all', '--output', file('src/generated/resources/')
-
-            mods {
-                nologpunch {
-                    source sourceSets.main
-                }
-            }
-        }
     }
 }
-
-// mixin {
-//       add sourceSets.main, "lothrazarnologpunch.refmap.json"
-//
-//       disableTargetValidator = false
-// }
 
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
@@ -117,20 +87,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
  
-    compile fg.deobf("mezz.jei:${jei_version}")
- //   compile fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
- //   compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
- //   runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    implementation fg.deobf("mezz.jei:${jei_version}")
 
-
-  //  implementation fg.deobf("curse.maven:simple-storage-network-268495:3257204")
-  //  implementation fg.deobf("curse.maven:cyclic-239286:3249448")
-  //  implementation fg.deobf("curse.maven:ctm-267602:3137659")
-  //  implementation fg.deobf("curse.maven:storage-drawers-223852:3180569")
-  //  implementation fg.deobf("curse.maven:refined-storage-243076:3157354")
-  //  implementation fg.deobf("curse.maven:cucumber-272335:3187116")
-  //  implementation fg.deobf("curse.maven:mystical-agriculture-246640:3152061")
-    
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
@@ -214,6 +172,6 @@ task copyJar(type: Copy) {
     into "${dist_folder}"
 }
 
-cleanJar {
+task cleanJar {
   delete 'build/libs'
 }
