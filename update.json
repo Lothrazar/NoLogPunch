@@ -1,9 +1,11 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/no-log-punch",
   "promos": {
-    "1.18-latest": "2.0.0"
+    "1.18-latest": "2.0.0",
+    "1.18.1-latest": "2.0.0",
+    "1.18.2-latest": "2.0.0"
   },
-  "1.18": {
+  "1.18.2": {
     "1.0.0": "Fixed to be compatible with latest forge toolActions update, Flint tool still acts as an Axe harvesting tool on wood/logs/etc ",
     "2.0.0": "Refactored design.  Removed all extraneus recipes, only recipe added is for the Flint tool now.  "
   }
