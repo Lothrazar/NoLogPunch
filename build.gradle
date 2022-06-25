@@ -1,16 +1,9 @@
-buildscript {
-    repositories {
-		maven { url = 'https://maven.minecraftforge.net' } 
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
 }
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
+
 
 
 version = "${mc_version}-${mod_version}"
@@ -18,9 +11,10 @@ group = 'com.lothrazar.nologpunch' // http://maven.apache.org/guides/mini/guide-
 archivesBaseName = 'nologpunch'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+import net.minecraftforge.gradle.common.tasks.SignJar
 
 minecraft {
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19'
  
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -73,19 +67,12 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
  
-    // fg.deobf("mezz.jei:${jei_version}")
- //   compile fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
- //   compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
- //   runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-
-
-  //  implementation fg.deobf("curse.maven:simple-storage-network-268495:3257204")
-  //  implementation fg.deobf("curse.maven:cyclic-239286:3249448")
-  //  implementation fg.deobf("curse.maven:ctm-267602:3137659")
-  //  implementation fg.deobf("curse.maven:storage-drawers-223852:3180569")
-  //  implementation fg.deobf("curse.maven:refined-storage-243076:3157354")
-  //  implementation fg.deobf("curse.maven:cucumber-272335:3187116")
-  //  implementation fg.deobf("curse.maven:mystical-agriculture-246640:3152061")
+	 // https://github.com/mezz/JustEnoughItems/wiki/Getting-Started-%5BJEI-10-or-higher-for-Forge-or-Fabric%5D#repositories
+	  compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
+	  compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
+	  // at runtime, use the full JEI
+	  runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-common:${jei_version}")
+	  runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
     
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
@@ -130,10 +117,6 @@ jar {
             "Implementation-Version": "${version}",
             "Implementation-Vendor" :"nologpunchsareus",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-            
-           // ,"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-           // "MixinConfigs": "mixins.myplugin.json",
-           // "FMLCorePluginContainsFMLMod": "true"
         ])
     }
 }
@@ -144,6 +127,20 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 
 //publish.dependsOn('reobfJar')
+
+task signJar(type: SignJar, dependsOn: jar) {
+
+    // findProperty allows us to reference the property without it existing. 
+    // Using project.propName would cause the script to fail validation if 
+    // the property did not exist. 
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
 
 publishing {
     publications {
@@ -163,7 +160,6 @@ task copyJar(type: Copy) {
     into "${dist_folder}"
 }
 
-build.finalizedBy copyJar
 
 task cleanJar {
   delete 'build/libs'
