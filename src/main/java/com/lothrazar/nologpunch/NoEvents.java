@@ -18,7 +18,7 @@ public class NoEvents {
     if (stack.isCorrectToolForDrops(state) || player.isCreative()) {
       return; // is a tool (or player is creative) so i don't care
     }
-    if (ConfigManager.LOGS.get() && state.is(BlockTags.LOGS)) {
+    if (ConfigManagerNolog.LOGS.get() && state.is(BlockTags.LOGS)) {
       //if its a log, then cancel break if stack has no tool types (isEmpty implied)
       event.setCanceled(true);
       event.setResult(Result.DENY);

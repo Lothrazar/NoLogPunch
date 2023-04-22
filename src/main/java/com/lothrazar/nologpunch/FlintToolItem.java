@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
@@ -25,7 +24,7 @@ import net.minecraftforge.common.ToolActions;
 public class FlintToolItem extends DiggerItem {
 
   public FlintToolItem(Properties builder) {
-    super(4F, -2.8F, Tiers.WOOD, BlockTags.MINEABLE_WITH_AXE, builder.tab(CreativeModeTab.TAB_TOOLS).durability(64));
+    super(4F, -2.8F, Tiers.WOOD, BlockTags.MINEABLE_WITH_AXE, builder.durability(64));
   }
 
   @Override
