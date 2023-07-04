@@ -15,7 +15,7 @@ issueTrackerURL="https://github.com/Lothrazar/NoLogPunch/issues" #optional
 # The modid of the mod
 modId="nologpunch" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
+version="${mod_version}" #mandatory
  # A display name for the mod
  
 displayName="nologpunch" #mandatory
@@ -25,7 +25,7 @@ updateJSONURL="https://raw.githubusercontent.com/Lothrazar/NoLogPunch/trunk/1.19
 displayURL="https://www.curseforge.com/minecraft/mc-mods/no-log-punch"
 
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="logoFile.png" #optional
+logoFile="" #optional
 # A text field displayed in the mod UI
 credits="Thanks to forge fml mcp Mojang" #optional
 # A text field displayed in the mod UI
