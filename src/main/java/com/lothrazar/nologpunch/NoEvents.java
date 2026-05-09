@@ -4,9 +4,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 public class NoEvents {
 
@@ -21,7 +20,7 @@ public class NoEvents {
     if (ConfigManagerNolog.LOGS.get() && state.is(BlockTags.LOGS)) {
       //if its a log, then cancel break if stack has no tool types (isEmpty implied)
       event.setCanceled(true);
-      event.setResult(Result.DENY);
+//      event.setResult(Result.DENY); // TOOD
     }
   }
 }
