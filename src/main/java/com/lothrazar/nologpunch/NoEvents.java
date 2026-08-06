@@ -5,12 +5,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 public class NoEvents {
 
   @SubscribeEvent
-  public void onBreak(BlockEvent.BreakEvent event) {
+  public void onBreak(BreakBlockEvent event) {
     Player player = event.getPlayer();
     ItemStack stack = player.getMainHandItem();
     BlockState state = event.getState();

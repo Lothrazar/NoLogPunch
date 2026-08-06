@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -23,9 +23,13 @@ public class FlintToolItem extends AxeItem {
 //          ItemAbilities.DEFAULT_AXE_ACTIONS.stream())
 //      .collect(Collectors.toCollection(Sets::newIdentityHashSet));
   public static final int MAX_DAMAGE = 256;
+  // WOOD's stats, but with a much higher custom durability
+  private static final ToolMaterial FLINT_MATERIAL = new ToolMaterial(
+      ToolMaterial.WOOD.incorrectBlocksForDrops(), MAX_DAMAGE, ToolMaterial.WOOD.speed(),
+      ToolMaterial.WOOD.attackDamageBonus(), ToolMaterial.WOOD.enchantmentValue(), ToolMaterial.WOOD.repairItems());
 
   public FlintToolItem(Properties builder) {
-    super(Tiers.WOOD, builder.durability(MAX_DAMAGE));
+    super(FLINT_MATERIAL, 6.0F, -3.2F, builder);
   }
 
 //  @Override
