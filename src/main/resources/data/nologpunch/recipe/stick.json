@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "minecraft:saplings"
-    },
-    {
-      "tag": "minecraft:saplings"
-    }
+    "#minecraft:saplings",
+    "#minecraft:saplings"
   ],
   "result": {
     "id": "minecraft:stick",

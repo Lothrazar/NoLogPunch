@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @EventBusSubscriber(modid=ModMain.MODID)
 public class ModRegistry {
 
-  public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, ModMain.MODID);
+  public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ModMain.MODID);
 
   @SubscribeEvent
   public static void buildContents(BuildCreativeModeTabContentsEvent event) {
@@ -22,5 +22,5 @@ public class ModRegistry {
     }
   }
 
-  public static final DeferredHolder<Item,FlintToolItem> FLINT_TOOL = ITEMS.register("flint_tool", () -> new FlintToolItem(new Item.Properties()));
+  public static final DeferredHolder<Item,FlintToolItem> FLINT_TOOL = ITEMS.registerItem("flint_tool", props -> new FlintToolItem(props));
 }
